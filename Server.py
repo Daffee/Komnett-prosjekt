@@ -20,7 +20,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     only connected clients, and not the server itself. If you want to write
     logic for the server, you must write it outside this class
     """
-    client_name = 0
+    def __init__(self):
+        self.client_name = 0
 
     def handle(self):
         """
@@ -33,13 +34,13 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         # Loop that listens for messages from the client
         while True:
             received_string = self.connection.recv(4096)
-
+            
             # TODO: Add handling of received payload from client
             if self.connection.data["request"] == "login":
                 time = datetime.datetime.now()
                 username = 'Server'
-
-                if self.client_name != 0:
+                
+                if self_client_name != 0:
                     response = 'Error'
                     content = 'You are already logged in'
                 elif self.connection.data["content"] in loggedinlist:
@@ -49,7 +50,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     un = self.connection.data["content"]
                     un = un.translate(None, digits)
                     if un.isalpha():
-                        loggedinlist.append(self.connection.data["content"])
+                        loggedinn.append(self.connection.data["content"])
                         response = 'Info'
                         content = 'Loggin successful'
                         self.client_name = str(self.connection.data["content"])
@@ -104,15 +105,15 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 username = 'Server'
                 response = 'Error'
                 content = 'Request is invalid'
+            
+            out = jsonconv(time, username, response, content)
+                
 
-            out = self.jsonconv(time, username, response, content)
-
-
-    def jsonconv(self, time, username, respons, content):
-
-        temp = {'Timestamp': time, 'Sender': username, 'Response': respons, 'Content': content}
+    def jsonconv(self, time, username, response, content):
+        
+        temp = {'Timestamp': time, 'Sender': username, 'Response': response, 'Content': content}
         output = json.dump(temp,indent=4, separators=(',', ': '))
-
+        
         return output
 
 
