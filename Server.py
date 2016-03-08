@@ -20,8 +20,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     only connected clients, and not the server itself. If you want to write
     logic for the server, you must write it outside this class
     """
-    def __init__(self):
-        self.client_name = 0
+    client_name = 0
 
     def handle(self):
         """
@@ -34,36 +33,36 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         # Loop that listens for messages from the client
         while True:
             received_string = self.connection.recv(4096)
-            
+
             # TODO: Add handling of received payload from client
             if self.connection.data["request"] == "login":
                 time = datetime.datetime.now()
                 username = 'Server'
-                
+
                 if self.client_name != 0:
-                    respons = 'Error'
+                    response = 'Error'
                     content = 'You are already logged in'
                 elif self.connection.data["content"] in loggedinlist:
-                    respons = 'Error'
+                    response = 'Error'
                     content = 'Username taken'
                 else:
                     un = self.connection.data["content"]
                     un = un.translate(None, digits)
                     if un.isalpha():
-                        loggedinn.append(self.connection.data["content"])
-                        respons = 'Info'
+                        loggedinlist.append(self.connection.data["content"])
+                        response = 'Info'
                         content = 'Loggin successful'
                         self.client_name = str(self.connection.data["content"])
                         # Send history
                     else:
-                        respons = 'Error'
+                        response = 'Error'
                         content = 'Username must be one ord containing only letters and numbers'
 
             elif self.connection.data["request"] == "logout":
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
-                    respons = 'Error'
+                    response = 'Error'
                     content = 'You are not logged in'
                 else:
                     response = 'Info'
@@ -75,11 +74,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 time = datetime.datetime.now()
                 if self.client_name == 0:
                     username = 'Server'
-                    respons = 'Error'
+                    response = 'Error'
                     content = 'You are not logged in'
                 else:
                     username = self.client_name
-                    respons = 'Message'
+                    response = 'Message'
                     content = self.connection.data["content"]
                     # History = History + str(username) + ': ' + str(self.connection.data["content"]) + '\n'
 
@@ -88,32 +87,32 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
-                    respons = 'Error'
+                    response = 'Error'
                     content = 'You are not logged in'
                 else:
-                    respons = 'Info'
+                    response = 'Info'
                     content = 'The names logged in are: ' + str(loggedinlist)
 
             elif self.connection.data["request"] == "help":
                 time = datetime.datetime.now()
                 username = 'Server'
-                respons = 'Info'
+                response = 'Info'
                 content = 'Send help'
 
             else:
                 time = datetime.datetime.now()
                 username = 'Server'
-                respons = 'Error'
+                response = 'Error'
                 content = 'Request is invalid'
-            
-            out = jsonconv(time, username, respons, content)
-                
+
+            out = self.jsonconv(time, username, response, content)
+
 
     def jsonconv(self, time, username, respons, content):
-        
+
         temp = {'Timestamp': time, 'Sender': username, 'Response': respons, 'Content': content}
         output = json.dump(temp,indent=4, separators=(',', ': '))
-        
+
         return output
 
 
