@@ -36,18 +36,18 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             received_string = self.connection.recv(4096)
             
             # TODO: Add handling of received payload from client
-            if self.connection.data["request"] == "login":
+            if self.connection.data["Request"] == "login":
                 time = datetime.datetime.now()
                 username = 'Server'
                 
                 if self_client_name != 0:
                     response = 'Error'
                     content = 'You are already logged in'
-                elif self.connection.data["content"] in loggedinlist:
+                elif self.connection.data["Content"] in loggedinlist:
                     response = 'Error'
                     content = 'Username taken'
                 else:
-                    un = self.connection.data["content"]
+                    un = self.connection.data["Content"]
                     un = un.translate(None, digits)
                     if un.isalpha():
                         loggedinn.append(self.connection.data["content"])
@@ -59,7 +59,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                         response = 'Error'
                         content = 'Username must be one ord containing only letters and numbers'
 
-            elif self.connection.data["request"] == "logout":
+            elif self.connection.data["Request"] == "logout":
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
@@ -71,7 +71,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     loggedinlist.remove(self.client_name)
                     self.client_name = 0
 
-            elif self.connection.data["request"] == "msg":
+            elif self.connection.data["Request"] == "msg":
                 time = datetime.datetime.now()
                 if self.client_name == 0:
                     username = 'Server'
@@ -80,11 +80,11 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 else:
                     username = self.client_name
                     response = 'Message'
-                    content = self.connection.data["content"]
+                    content = self.connection.data["Content"]
                     # History = History + str(username) + ': ' + str(self.connection.data["content"]) + '\n'
 
 
-            elif self.connection.data["request"] == "names":
+            elif self.connection.data["Request"] == "names":
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
@@ -94,7 +94,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     response = 'Info'
                     content = 'The names logged in are: ' + str(loggedinlist)
 
-            elif self.connection.data["request"] == "help":
+            elif self.connection.data["Request"] == "help":
                 time = datetime.datetime.now()
                 username = 'Server'
                 response = 'Info'
