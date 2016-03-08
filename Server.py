@@ -2,6 +2,7 @@
 import SocketServer
 import json
 import datetime
+from string import digits
 
 
 """
@@ -45,22 +46,29 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     respons = 'Error'
                     content = 'Username taken'
                 else:
-                    loggedinn.append(self.connection.data["content"])
-                    respons = 'Info'
-                    content = 'Loggin successful'
-                    self.client_name = str(self.connection.data["content"])
+                    un = self.connection.data["content"]
+                    un = un.translate(None, digits)
+                    if un.isalpha():
+                        loggedinn.append(self.connection.data["content"])
+                        respons = 'Info'
+                        content = 'Loggin successful'
+                        self.client_name = str(self.connection.data["content"])
+                        # Send history
+                else:
+                    respons = 'Error'
+                    content = 'Username must be one ord containing only letters and numbers'
 
             elif self.connection.data["request"] == "logout":
                 time = datetime.datetime.now()
                 username = 'Server'
-                    if self.client_name == 0:
-                        respons = 'Error'
-                        content = 'You are not logged in'
-                    else:
-                        response = 'Info'
-                        content = 'You are now logged out'
-                        loggedinlist.remove(self.client_name)
-                        self.client_name = 0
+                if self.client_name == 0:
+                    respons = 'Error'
+                    content = 'You are not logged in'
+                else:
+                    response = 'Info'
+                    content = 'You are now logged out'
+                    loggedinlist.remove(self.client_name)
+                    self.client_name = 0
 
             elif self.connection.data["request"] == "msg":
                 time = datetime.datetime.now()
@@ -72,7 +80,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     username = self.client_name
                     respons = 'Message'
                     content = self.connection.data["content"]
-                    History = History + str(username) + ': ' + str(self.connection.data["content"]) + '\n'
+                    # History = History + str(username) + ': ' + str(self.connection.data["content"]) + '\n'
 
 
             elif self.connection.data["request"] == "names":
@@ -105,21 +113,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
         output = '{\n "timestamp":<' + str(time) + '>,\n "sender":<' + str(username) + '>,\n "respons":<' + str(respons) + '>,\n "content":<' + str(content) + '>,\n }'
         return output
     def fromjson(input):
-
-
-
-
-# Time:
-# import datetime
-# time = datetime.datetime.now()
-
-
-# import time
-# ts = time.time()
-# import datetime
-# st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-# st = 2012-12-15 01:21:05
-
 
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
