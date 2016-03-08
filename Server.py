@@ -45,7 +45,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 elif self.connection.data["content"] in loggedinlist:
                     respons = 'Error'
                     content = 'Username taken'
-                elif:
+                else:
                     un = self.connection.data["content"]
                     un = un.translate(None, digits)
                     if un.isalpha():
@@ -54,9 +54,9 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                         content = 'Loggin successful'
                         self.client_name = str(self.connection.data["content"])
                         # Send history
-                else:
-                    respons = 'Error'
-                    content = 'Username must be one ord containing only letters and numbers'
+                    else:
+                        respons = 'Error'
+                        content = 'Username must be one ord containing only letters and numbers'
 
             elif self.connection.data["request"] == "logout":
                 time = datetime.datetime.now()
