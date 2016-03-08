@@ -53,10 +53,9 @@ class Client:
     def login(self):
         pass
 
-    def jsonconv(self, string, request):
+    def jsonconv(self, content, request):
 
-        temp = {}
-        temp
+        temp = {'Request': request, 'Content': content}
         output = json.dump(temp,indent=4, separators=(',', ': '))
         return output
         pass
@@ -69,7 +68,7 @@ class Client:
 
 
 if __name__ == '__main__':
-    
+
     """
     This is the main method and is executed when you type "python Client.py"
     in your terminal.
