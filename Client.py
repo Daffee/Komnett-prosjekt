@@ -16,8 +16,11 @@ class Client:
 
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = 'localhost'
-        self.server_port=9998
+
+        adress = ('localhost', 9998)
+        self.connection.connect(adress)
+
+        running = True
 
 
         # TODO: Finish init process with necessary code
@@ -25,11 +28,17 @@ class Client:
 
     def run(self):
         # Initiate the connection to the server
-        self.connection.connect((self.host, self.server_port))
-        
+        running = True
+        while running:
+            message=bytes(input("login"), 'UTF-8')
+            self.connection.send(message)
+            running = False
+
+
     def disconnect(self):
         # TODO: Handle disconnection
         self.connection.close()
+        running = False
         # print: something
         pass
 
@@ -52,6 +61,7 @@ class Client:
 
     def login(self):
         pass
+
 
     def jsonconv(self, content, request):
 
