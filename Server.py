@@ -112,7 +112,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     def jsonconv(self, time, username, response, content):
         
         temp = {'Timestamp': time, 'Sender': username, 'Response': response, 'Content': content}
-        output = json.dump(temp,indent=4, separators=(',', ': '))
+        output = json.dumps(temp,indent=4, separators=(',', ': '))
         
         return output
 
