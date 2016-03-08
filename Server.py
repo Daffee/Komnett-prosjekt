@@ -20,7 +20,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     only connected clients, and not the server itself. If you want to write
     logic for the server, you must write it outside this class
     """
-    self.client_name = 0
+    def __init__(self):
+        self.client_name = 0
 
     def handle(self):
         """
