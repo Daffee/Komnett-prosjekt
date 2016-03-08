@@ -40,7 +40,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 time = datetime.datetime.now()
                 username = 'Server'
                 
-                if self_client_name != 0:
+                if self.client_name != 0:
                     respons = 'Error'
                     content = 'You are already logged in'
                 elif self.connection.data["content"] in loggedinlist:
