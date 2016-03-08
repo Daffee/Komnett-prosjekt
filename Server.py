@@ -45,7 +45,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 elif self.connection.data["content"] in loggedinlist:
                     respons = 'Error'
                     content = 'Username taken'
-                else:
+                elif:
                     un = self.connection.data["content"]
                     un = un.translate(None, digits)
                     if un.isalpha():
@@ -105,14 +105,15 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 respons = 'Error'
                 content = 'Request is invalid'
             
-            out = tojson(time, username, respons, content)
+            out = jsonconv(time, username, respons, content)
+                
 
-    
-    
-    def tojson(time, username, respons, content):
-        output = '{\n "timestamp":<' + str(time) + '>,\n "sender":<' + str(username) + '>,\n "respons":<' + str(respons) + '>,\n "content":<' + str(content) + '>,\n }'
+    def jsonconv(self, time, username, respons, content):
+        
+        temp = {'Timestamp': time, 'Sender': username, 'Response': respons, 'Content': content}
+        output = json.dump(temp,indent=4, separators=(',', ': '))
+        
         return output
-    def fromjson(input):
 
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
