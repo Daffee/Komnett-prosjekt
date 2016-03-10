@@ -10,7 +10,6 @@ Variables and functions that must be used by all the ClientHandler objects
 must be written here (e.g. a dictionary for connected clients)
 """
 
-History = ''
 loggedinlist = ''
 
 class ClientHandler(SocketServer.BaseRequestHandler):
