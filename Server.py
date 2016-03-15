@@ -47,8 +47,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     content = 'Username taken'
                 else:
                     un = self.connection.data["Content"]
-                    un = un.translate(None, digits)
-                    if un.isalpha():
+                    if un.isalnum():
                         loggedinn.append(self.connection.data["content"])
                         response = 'Info'
                         content = 'Loggin successful'
