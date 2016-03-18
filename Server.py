@@ -10,7 +10,7 @@ Variables and functions that must be used by all the ClientHandler objects
 must be written here (e.g. a dictionary for connected clients)
 """
 History = []
-loggedinlist = ''
+loggedinlist = []
 
 class ClientHandler(SocketServer.BaseRequestHandler):
     """
@@ -20,99 +20,100 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     logic for the server, you must write it outside this class
     """
 
+    def jsonconv(self, time, username, response, content):
+        
+        temp = {'timestamp': time, 'sender': username, 'response': response, 'content': content}
+        output = json.dumps(temp,indent=4, separators=(',', ': '))
+        
+        return output
+    
     def handle(self):
         """
         This method handles the connection between a client and the server.
         """
+        self.client_name = 0
         self.ip = self.client_address[0]
         self.port = self.client_address[1]
         self.connection = self.request
 
         # Loop that listens for messages from the client
         while True:
-            rec_str = self.connection.recv(4096)
+            rec_str = json.loads(self.connection.recv(4096))
             
             # TODO: Add handling of received payload from client
-            if rec_str["Request"] == "login":
+            if rec_str["request"] == "login":
                 time = datetime.datetime.now()
                 username = 'Server'
                 
                 if self.client_name != 0:
-                    response = 'Error'
+                    response = 'error'
                     content = 'You are already logged in'
-                elif rec_str["Content"] in loggedinlist:
-                    response = 'Error'
+                elif rec_str["content"] in loggedinlist:
+                    response = 'error'
                     content = 'Username taken'
                 else:
-                    un = rec_str["Content"]
+                    un = rec_str["content"]
                     if un.isalnum():
-                        loggedinn.append(rec_str["content"])
-                        response = 'Info'
+                        loggedinlist.append(rec_str["content"])
+                        response = 'info'
                         content = History
                         self.client_name = str(rec_str["content"])
                     else:
-                        response = 'Error'
+                        response = 'error'
                         content = 'Username must be one ord containing only letters and numbers'
 
-            elif rec_str["Request"] == "logout":
+            elif rec_str["request"] == "logout":
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
-                    response = 'Error'
+                    response = 'error'
                     content = 'You are not logged in'
                 else:
-                    response = 'Info'
+                    response = 'info'
                     content = 'You are now logged out'
                     loggedinlist.remove(self.client_name)
                     self.client_name = 0
 
-            elif rec_str["Request"] == "msg":
+            elif rec_str["request"] == "msg":
                 time = datetime.datetime.now()
                 if self.client_name == 0:
                     username = 'Server'
-                    response = 'Error'
+                    response = 'error'
                     content = 'You are not logged in'
                 else:
                     username = self.client_name
-                    response = 'Message'
-                    content = rec_str["Content"]
+                    response = 'message'
+                    content = rec_str["content"]
 
 
-            elif rec_str["Request"] == "names":
+            elif rec_str["request"] == "names":
                 time = datetime.datetime.now()
                 username = 'Server'
                 if self.client_name == 0:
-                    response = 'Error'
+                    response = 'error'
                     content = 'You are not logged in'
                 else:
-                    response = 'Info'
+                    response = 'info'
                     content = 'The names logged in are: ' + str(loggedinlist)
 
-            elif rec_str["Request"] == "help":
+            elif rec_str["request"] == "help":
                 time = datetime.datetime.now()
                 username = 'Server'
-                response = 'Info'
-                content = 'Send help'
+                response = 'info'
+                content = 'Supported commands: login, msg, names, logout, help'
 
             else:
                 time = datetime.datetime.now()
                 username = 'Server'
-                response = 'Error'
+                response = 'error'
                 content = 'Request is invalid'
             temptime = str(time)
             timeString = temptime[0:19]
-            out = jsonconv(timeString, username, response, content)
+            out = self.jsonconv(timeString, username, response, content)
             self.connection.send(out)
-            
-            if out['content'] == 'message':
+            if response == 'message':
                 History.append(out)
 
-    def jsonconv(self, time, username, response, content):
-        
-        temp = {'Timestamp': time, 'Sender': username, 'Response': response, 'Content': content}
-        output = json.dumps(temp,indent=4, separators=(',', ': '))
-        
-        return output
 
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
