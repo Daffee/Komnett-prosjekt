@@ -19,8 +19,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
     only connected clients, and not the server itself. If you want to write
     logic for the server, you must write it outside this class
     """
-    def __init__(self):
-        self.client_name = 0
 
     def handle(self):
         """
@@ -39,7 +37,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 time = datetime.datetime.now()
                 username = 'Server'
                 
-                if self_client_name != 0:
+                if self.client_name != 0:
                     response = 'Error'
                     content = 'You are already logged in'
                 elif self.connection.data["Content"] in loggedinlist:
@@ -106,7 +104,7 @@ class ClientHandler(SocketServer.BaseRequestHandler):
             out = jsonconv(timeString, username, response, content)
             self.connection.send(out)
             
-            if out['content'] = 'message':
+            if out['content'] == 'message':
                 History.append(out)
 
     def jsonconv(self, time, username, response, content):
