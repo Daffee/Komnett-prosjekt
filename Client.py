@@ -17,13 +17,10 @@ class Client:
         # Set up the socket connection to the server
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        adress = ('localhost', 9997)
+        adress = ('localhost', 9998)
         self.connection.connect(adress)
-
+        MessageReceiver.daemon.__init__
         self.running = True
-
-
-        # TODO: Finish init process with necessary code
         self.run()
 
     def run(self):
@@ -31,18 +28,17 @@ class Client:
         while self.running:
             Client.interface(self)
 
-
     def disconnect(self):
 
         # TODO: Handle disconnection
         self.connection.close()
         self.running = False
         print("Du er nå logget av")
-        pass
 
     def receive_message(self, message):
-        self.connection.recv(4098)
-        pass
+
+        MessageParser.parse(message)
+
 
     def send_payload(self, data):
 
@@ -53,14 +49,13 @@ class Client:
         msg = Client.jsonconv(self, brukerinput, "msg")
         self.send_payload(msg)
 
-
     def send_help(self):
         self.send_payload(self.jsonconv('help',None ))
 
-    def login(self):
-        self.send_payload((self.jsonconv('login', None)))
+    def login(self, login, username):
+        self.send_payload((self.jsonconv(login, username)))
 
-    def jsonconv(self, content, request):
+    def jsonconv(self, request, content):
 
         temp = {'Request': request, 'Content': content}
         output = json.dumps({'Request': request, 'Content': content}, indent=4, separators=(',', ': '))
@@ -68,26 +63,25 @@ class Client:
 
     def interface(self):
         
-        brukerinput=input("Hva vil du gjøre?")
+        brukerinput=raw_input("Hva vil du gjøre?")
         if brukerinput == "help":
-            output=Client.jsonconv(self, None, "help")
+            self.send_help()
         elif brukerinput == "name":
-            output=Client.jsonconv(self, None, "name")
+            pass
         elif brukerinput == "login":
-            brukerinput = input("Ditt brukernavn?")
-            output=Client.jsonconv(self, brukerinput, "login")
+            brukernavn = raw_input("Ditt brukernavn?")
+            self.login(brukerinput, brukernavn)
         elif brukerinput == "msg":
-            brukerinput = input("Hva er din beskjed?")
-            output = Client.jsonconv(self, brukerinput, "msg")
+            beskjed = raw_input("Hva er din beskjed?")
+            self.msg(brukerinput, beskjed)
 
         elif brukerinput == "logout":
             self.disconnect()
-            output = " "
+            output = None
         else:
             print("Dette er ikke en lovelig kommando")
             output = None
-        
-        return output
+
 
 
 
@@ -100,4 +94,4 @@ if __name__ == '__main__':
 
     No alterations are necessary
     """
-    client = Client('localhost', 9997)
+    client = Client('localhost', 9998)
