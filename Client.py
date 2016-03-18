@@ -19,7 +19,8 @@ class Client:
 
         adress = ('localhost', 9998)
         self.connection.connect(adress)
-        MessageReceiver.daemon.__init__
+        receiver = MessageReceiver(self, self.connection)
+        receiver.start()
         self.running = True
         self.run()
 
@@ -36,16 +37,17 @@ class Client:
         print("Du er nå logget av")
 
     def receive_message(self, message):
-
+        print 'in receive'
         MessageParser.parse(message)
+        print 'after parse'
 
     def send_payload(self, data):
 
         self.connection.send(data)
-
+        pass
 
     def msg(self, brukerinput):
-        msg = self.jsonconv(self, brukerinput, "msg")
+        msg = Client.jsonconv(self, brukerinput, "msg")
         self.send_payload(msg)
 
     def send_help(self):
@@ -81,7 +83,7 @@ class Client:
             self.disconnect()
             output = None
         else:
-            print("Dette er ikke en lovelig kommando")
+            print("Dette er ikke en lovlig kommando")
             output = None
 
 
