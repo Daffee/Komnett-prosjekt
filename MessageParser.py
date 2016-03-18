@@ -16,22 +16,22 @@ class MessageParser():
         if payload['response'] in self.possible_responses:
             return self.possible_responses[payload['response']](payload)
         else:
-            return 'Error, invalid response'
+            print 'Error, invalid response'
 
     def parse_error(self, payload):
         error_msg = payload['content']
-        return 'Error: ' + payload['timestamp'] + ' ' + error_msg
+        print 'Error: ' + payload['timestamp'] + ' ' + error_msg
     def parse_info(self, payload):
         info_msg = payload['content']
-        return 'Information: ' + payload['timestamp'] + ' ' + info_msg
+        print 'Information: ' + payload['timestamp'] + ' ' + info_msg
     def parse_message(self, payload):
         msg = payload['content']
-        return 'Message: ' + payload['timestamp'] + ' ' + msg
+        print 'Message: ' + payload['timestamp'] + ' ' + msg
     def parse_history(self, payload):
         history_list = payload['content']
         length = len(history_list)
-        print('History: \n')
+        print 'History: \n'
         for i in range(0,length):
             msg = json.loads(history_list(i))
-            print(msg + '\n')
-        return 'Up to date \n'
+            print msg + '\n'
+        print 'Succesfully logged in!'
