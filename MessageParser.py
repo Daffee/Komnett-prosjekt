@@ -26,12 +26,12 @@ class MessageParser():
         print 'Information: ' + payload['timestamp'] + ' ' + info_msg
     def parse_message(self, payload):
         msg = payload['content']
-        print 'Message: ' + payload['timestamp'] + ' ' + msg
+        print 'Message: ' + payload['timestamp'] + ' ' + payload['sender'] + ' ' + msg
     def parse_history(self, payload):
         history_list = payload['content']
         length = len(history_list)
         print 'History: \n'
         for i in range(0,length):
             msg = json.loads(history_list(i))
-            print msg + '\n'
+            print 'Message: ' + msg['timestamp'] + ' ' + msg['sender'] + ' ' + msg['content'] '\n'
         print 'Succesfully logged in!'
