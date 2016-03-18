@@ -39,14 +39,13 @@ class Client:
 
         MessageParser.parse(message)
 
-
     def send_payload(self, data):
 
         self.connection.send(data)
-        pass
+
 
     def msg(self, brukerinput):
-        msg = Client.jsonconv(self, brukerinput, "msg")
+        msg = self.jsonconv(self, brukerinput, "msg")
         self.send_payload(msg)
 
     def send_help(self):
@@ -55,10 +54,13 @@ class Client:
     def login(self, login, username):
         self.send_payload((self.jsonconv(login, username)))
 
+    def name(self):
+        self.send_payload(self.jsonconv(('name', None)))
+
     def jsonconv(self, request, content):
 
         temp = {'request': request, 'content': content}
-        output = json.dumps({'request': request, 'rontent': content}, indent=4, separators=(',', ': '))
+        output = json.dumps({'request': request, 'content': content}, indent=4, separators=(',', ': '))
         return output
 
     def interface(self):
