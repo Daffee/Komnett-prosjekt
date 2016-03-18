@@ -26,5 +26,3 @@ class MessageReceiver(Thread):
         message = self.connection.recv(4098)
         if message:
             self.client.receive_message(message)
-        else:
-            
