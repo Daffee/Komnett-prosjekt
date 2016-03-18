@@ -9,7 +9,7 @@ from string import digits
 Variables and functions that must be used by all the ClientHandler objects
 must be written here (e.g. a dictionary for connected clients)
 """
-
+History = []
 loggedinlist = ''
 
 class ClientHandler(SocketServer.BaseRequestHandler):
@@ -50,9 +50,8 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     if un.isalnum():
                         loggedinn.append(self.connection.data["content"])
                         response = 'Info'
-                        content = 'Loggin successful'
+                        content = History
                         self.client_name = str(self.connection.data["content"])
-                        # Send history
                     else:
                         response = 'Error'
                         content = 'Username must be one ord containing only letters and numbers'
@@ -79,7 +78,6 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                     username = self.client_name
                     response = 'Message'
                     content = self.connection.data["Content"]
-                    # History = History + str(username) + ': ' + str(self.connection.data["content"]) + '\n'
 
 
             elif self.connection.data["Request"] == "names":
@@ -103,9 +101,13 @@ class ClientHandler(SocketServer.BaseRequestHandler):
                 username = 'Server'
                 response = 'Error'
                 content = 'Request is invalid'
+            temptime = str(time)
+            timeString = temptime[0:19]
+            out = jsonconv(timeString, username, response, content)
+            self.connection.send(out)
             
-            out = jsonconv(time, username, response, content)
-                
+            if out['content'] = 'message':
+                History.append(out)
 
     def jsonconv(self, time, username, response, content):
         
