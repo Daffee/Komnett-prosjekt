@@ -57,8 +57,8 @@ class Client:
 
     def jsonconv(self, request, content):
 
-        temp = {'Request': request, 'Content': content}
-        output = json.dumps({'Request': request, 'Content': content}, indent=4, separators=(',', ': '))
+        temp = {'request': request, 'content': content}
+        output = json.dumps({'request': request, 'rontent': content}, indent=4, separators=(',', ': '))
         return output
 
     def interface(self):
