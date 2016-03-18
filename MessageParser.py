@@ -33,5 +33,5 @@ class MessageParser():
         print 'History: \n'
         for i in range(0,length):
             msg = json.loads(history_list(i))
-            print 'Message: ' + msg['timestamp'] + ' ' + msg['sender'] + ' ' + msg['content'] '\n'
+            print 'Message: ' + msg['timestamp'] + ' ' + msg['sender'] + ' ' + msg['content'] + '\n'
         print 'Succesfully logged in!'
