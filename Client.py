@@ -29,53 +29,43 @@ class Client:
     def run(self):
         # Initiate the connection to the server
         while self.running:
-
-            output = Client.interface(self)
-
-            self.connection.send(output)
-            running = False
+            Client.interface(self)
 
 
     def disconnect(self):
 
         # TODO: Handle disconnection
         self.connection.close()
-        running = False
+        self.running = False
         print("Du er nå logget av")
         pass
 
     def receive_message(self, message):
         self.connection.recv(4098)
-        # TODO: Handle incoming message
         pass
 
     def send_payload(self, data):
-        # TODO: Handle sending of a payload
-        pass
-        
-    # More methods may be needed!
 
-    def msg(self):
+        self.connection.send(data)
         pass
+
+    def msg(self, brukerinput):
+        msg = Client.jsonconv(self, brukerinput, "msg")
+        self.send_payload(msg)
+
 
     def send_help(self):
-        pass
+        self.send_payload(self.jsonconv('help',None ))
 
     def login(self):
-        pass
+        self.send_payload((self.jsonconv('login', None)))
 
     def jsonconv(self, content, request):
-
 
         temp = {'Request': request, 'Content': content}
         output = json.dumps({'Request': request, 'Content': content}, indent=4, separators=(',', ': '))
         return output
-        pass
 
-    def stringconv(self, json):
-
-        output = ""
-        
     def interface(self):
         
         brukerinput=input("Hva vil du gjøre?")
@@ -89,6 +79,10 @@ class Client:
         elif brukerinput == "msg":
             brukerinput = input("Hva er din beskjed?")
             output = Client.jsonconv(self, brukerinput, "msg")
+
+        elif brukerinput == "logout":
+            self.disconnect()
+            output = " "
         else:
             print("Dette er ikke en lovelig kommando")
             output = None
