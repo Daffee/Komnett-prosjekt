@@ -14,15 +14,14 @@ class MessageReceiver(Thread):
         """
         self.client = client
         self.connection = connection
-
+        Thread.__init__(self)
         # Flag to run thread as a daemon
         self.daemon = True
-
         # TODO: Finish initialization of MessageReceiver
-        
 
     def run(self):
         # TODO: Make MessageReceiver receive and handle payloads
-        message = self.connection.recv(4098)
-        if message:
-            self.client.receive_message(message)
+        while True:
+            message = self.connection.recv(4096)
+            if message:
+                self.client.receive_message(message)
